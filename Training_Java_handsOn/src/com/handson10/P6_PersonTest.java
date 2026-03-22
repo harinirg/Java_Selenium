@@ -30,6 +30,7 @@ public class P6_PersonTest {
         ArrayList<Person> list = new ArrayList<>();
 
         int n = sc.nextInt();
+        sc.nextLine();
 
         for (int i = 0; i < n; i++) {
             String first = sc.next();
