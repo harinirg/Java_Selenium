@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * 
- */
-module Expleo_Training {
-}
