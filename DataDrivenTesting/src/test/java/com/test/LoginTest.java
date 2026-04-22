@@ -1,7 +1,8 @@
 package com.test;
 
 import java.time.Duration;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,21 +16,29 @@ import org.testng.annotations.Test;
 
 import com.utilities.ExcelUtil;
 
+
 public class LoginTest {
+    public static Logger log = LogManager.getLogger(LoginTest.class);
 	
   private static final ThreadLocal <WebDriver> driver=new ThreadLocal <WebDriver>();
 	  
-	 @BeforeMethod
-	 public void beforeMethod() {
-		  
-	 System.out.println("Start the test");
-	 driver.set(new ChromeDriver());
+  @BeforeMethod
+  public void beforeMethod() {
+
+      log.info("Starting the test");
+      driver.set(new ChromeDriver());
   }
  
 	 @Test(dataProvider="ValidexcelData",dataProviderClass=ExcelUtil.class)
 	  public void LoginValidation(String UserName,String Password) {
+		 if (UserName == null || UserName.isEmpty() || Password == null || Password.isEmpty()) {
+		        log.warn("Skipping test due to empty data");
+		        return;
+		    }
+
 		 
 		 WebDriver driver1 = driver.get();
+		 log.info("Opening application");
 		 
 		 driver1.manage().window().maximize();
 		 
@@ -38,10 +47,11 @@ public class LoginTest {
 		  driver1.findElement(By.id("login2")).click();
 		  
 		  WebDriverWait wait = new WebDriverWait(driver1,Duration.ofSeconds(10));
-		  
+		  log.info("Entering username: ");
 		  wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("loginusername"))).sendKeys(UserName);
-		  
+		  log.info("Entering password");
 		  driver1.findElement(By.id("loginpassword")).sendKeys(Password);
+		  log.info("Clicking login submit");
 		  
 		  driver1.findElement(By.xpath("//button[text()='Log in']")).click();
 		  
@@ -51,7 +61,7 @@ public class LoginTest {
 		  
 		  Assert.assertEquals(Actual,ExpectedMessage);
 		  
-		  System.out.println("Login Successfull");
+		  log.info("Login Successful");
 		 }
 	 
 	 @Test(dataProvider="InValidexcelData",dataProviderClass=ExcelUtil.class)
@@ -76,8 +86,8 @@ public class LoginTest {
 		  wait.until(ExpectedConditions.alertIsPresent());
 		  
 		  Alert alert = driver2.switchTo().alert();
-		  
 		  String alert_message = alert.getText();
+		  log.info("Alert message: " + alert_message);
 		  
 		  Assert.assertTrue(alert_message.equals("Wrong password.") || 
 				  alert_message.equals("User does not exist.")
@@ -86,12 +96,9 @@ public class LoginTest {
 		  
 		  alert.accept();
 	  }
-  
-  
-	
 		  @AfterMethod
 		  public void afterMethod() {
-			  
+			  log.info("Closing browser");
 			  WebDriver driver1 = driver.get();
 			  if(driver1 != null)
 				  driver1.quit();
