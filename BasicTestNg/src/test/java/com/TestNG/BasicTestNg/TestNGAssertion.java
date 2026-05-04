@@ -30,17 +30,6 @@ public class TestNGAssertion {
 	  System.out.println("Same Assert is successful");
 	  Assert.assertNotSame(str4, str5);
 	  System.out.println("Not Same Assert is successful");
-
-
-	  
-
-	  
-
-	  
-	  
-	  
-	  
-
 	  
   }
 }

@@ -6,7 +6,6 @@
       <run>
       <include name="groupA"></include>
       <include name="groupB"></include>
-
       </run>
   </groups>
     <classes>
